@@ -4,7 +4,7 @@
 % simulation by running DataRecovery_PolarCoordinates script.
 clear 
 clc
-addpath("\MATLAB\Gaussian Process Regression")
+genpath(addpath("\MATLAB\IAC2024_GPEnvMon"))
 DataRecovery
 
 % Change timeline to hours
