@@ -6,8 +6,8 @@
 %subtract unwanted data to get a lower resolution picture? 
 
 %0. Load simulation data
-addpath("\MATLAB\MDIPS Demo\0DegreeInc")
-load("\MATLAB\Results\myData_1.mat") 
+genpath(addpath("\MATLAB\IAC2024_GPEnvMon"))
+load("\MATLAB\IAC2024_GPEnvMon\Results\myData_1.mat") 
 %clean up unnecessary variables
 clear D D_p deltaMatrix F index mySTS mySTS2 n R r_o runtime t T
 
