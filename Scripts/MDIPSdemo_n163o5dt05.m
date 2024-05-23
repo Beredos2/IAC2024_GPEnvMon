@@ -12,7 +12,7 @@
 %Clean up 
 clear 
 clc
-addpath(genpath("\MATLAB\IAC2024_GPxFemtosatsProject"))
+addpath(genpath("\MATLAB\IAC2024_GPEnvMon"))
 %% Time parameter definition-------------------------------------------------
 n_orbits = 100; %Choose the number of orbits we want to analyse
 t_0 = 1672531200; %mission start epoch [s] %NOTE: 00:00 1 of January, 2023
