@@ -7,8 +7,8 @@
 % and magnetic intensity norm(M) as [x y z Mx My Mz norm(M)] 
 
 %0. Load simulation data
-addpath(genpath("C:\Users\2700783t\OneDrive - University of Glasgow\InMotu\MATLAB\IAC2024_GPxFemtosatsProject"))
-load("C:\Users\2700783t\OneDrive - University of Glasgow\InMotu\MATLAB\IAC2024_GPxFemtosatsProject\Results\Experiment_3") 
+addpath(genpath("\MATLAB\IAC2024_GPEnvMon"))
+load("\MATLAB\IAC2024_GPEnvMon\Results\myData_1.mat") 
 %clean up unnecessary variables
 clear D D_p deltaMatrix F index mySTS mySTS2 n R r_o runtime t T
 
