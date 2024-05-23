@@ -6,8 +6,8 @@
 %subtract unwanted data to get a lower resolution picture? 
 
 %0. Load simulation data
-addpath("C:\Users\2700783t\OneDrive - University of Glasgow\InMotu\MATLAB\MDIPS Demo\0DegreeInc")
-load("C:\Users\2700783t\OneDrive - University of Glasgow\InMotu\MATLAB\MDIPS Demo\0DegreeInc\MyLatestData.mat") 
+addpath("\MATLAB\MDIPS Demo\0DegreeInc")
+load("\MATLAB\Results\myData_1.mat") 
 %clean up unnecessary variables
 clear D D_p deltaMatrix F index mySTS mySTS2 n R r_o runtime t T
 
