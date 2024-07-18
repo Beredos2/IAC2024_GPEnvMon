@@ -7,8 +7,8 @@
 % and magnetic intensity norm(M) as [x y z Mx My Mz norm(M)] 
 
 %0. Load simulation data
-addpath(genpath("\MATLAB\IAC2024_GPEnvMon"))
-load("\MATLAB\IAC2024_GPEnvMon\Results\myData_1.mat") 
+addpath(genpath("C:\Users\2700783t\OneDrive - University of Glasgow\InMotu\MATLAB\IAC2024_GPxFemtosatsProject"))
+load("n200o5dt1_validationSet.mat") 
 %clean up unnecessary variables
 clear D D_p deltaMatrix F index mySTS mySTS2 n R r_o runtime t T
 
@@ -16,8 +16,8 @@ clear D D_p deltaMatrix F index mySTS mySTS2 n R r_o runtime t T
 % Known sample rate of the simulation: 0.5 seconds 
 % If I want to sample 1/second, then I need to sample from myClock.timeline
 % once every 2 measurements. 
-modelDT = 0.5; %seconds
-deltaT = 10; %seconds
+modelDT = 1; %seconds
+deltaT = 5; %seconds
 T_index = deltaT/modelDT; %index rate 
 % Timeline of interest 
 timeline = myClock.timeline(:,1); 
@@ -39,3 +39,20 @@ for t = 1:T_index:length(myClock.timeline)
 end
 
 clear ans data myEarth mySwarm t i T myClock modelDT deltaT
+
+%% Convert Data to cylindrical coordiantes: The coordinates being converted
+%specifically address position, not magnetic field vector. The components
+%of the cartesian columns are replaced by [theta, rho, z] 
+
+dataCyl = cell(1,length(Data)); %Create storge structure
+% Reasignment loop
+for t=1:length(timeline)
+    for id = 1:height(Data{t}) 
+        [theta,rho,z] = cart2pol(Data{t}(id,1),Data{t}(id,2),Data{t}(id,3));
+        dataCyl{t}(id,1:3) = [theta,rho,z];
+        dataCyl{t}(id,4:7) = Data{t}(id,4:7); 
+    end
+end
+
+clear ans id t T_index theta rho z
+
