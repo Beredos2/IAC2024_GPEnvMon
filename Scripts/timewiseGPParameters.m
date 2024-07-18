@@ -8,16 +8,16 @@
 % understanding the method's perfrmance. 
 
 %% initiate variables
-DataRecovery %Check script for dT
+% DataRecovery %Check script for dT
 % function arguments and loop parameters
 p = 0.15; % proportion of removed data points
-iterations = 100; %number of iterations used to establish average error anaylisis variables
-k = length(Data)-1; % number of time instants
+iterations = 50; %number of iterations used to establish average error anaylisis variables
+k = length(Data); % number of time instants %fix applied, previously set to DataLength-1
 kernel = "ardsquaredexponential";
 % error analysis storage variables: L1 is mean, L2 is std, columns are t
-MAE = zeros(2,k); 
-MAPE = zeros(2,k); 
-RMSE = zeros(2,k);
+MAE = zeros(2,k-1); 
+MAPE = zeros(2,k-1); 
+RMSE = zeros(2,k-1);
 %% GP_Loop
 %Time loop 
 for t=2:k 
@@ -34,7 +34,7 @@ for t=2:k
         %train GP model 
         X = Data{t}(TrSet,1:3); %position
         Y = Data{t}(TrSet,7); %magnetic field intensity
-        myModel = fitrgp(X,Y,'KernelFunction',kernel); 
+        myModel = fitrgp(X,Y,'KernelFunction',kernel,'Standardize',1); 
         yPred = predict(myModel,Data{t}(TstSet,1:3)); 
         %collect and store performance data
         [MAEi(i),MAPEi(i),RMSEi(i)] = gpPerformance(Data,TstSet,yPred,t); %Store into available memory
@@ -53,9 +53,103 @@ for t=2:k
     MAPE(2,t) = stdMAPE; 
     RMSE(1,t) = meanRMSE; 
     RMSE(2,t) = stdRMSE; 
+    disp(t)
 end
 
-% Plot results to screen 
+clear i k kernel iterations p stdMAE stdMAPE stdRMSE MAEi MAPEi RMSEi meanMAE meanMAPE meanRMSE myModel t TrSet TstSet X Y yPred
+%% Plot results to screen 
+
+%timeline = timeline0(2:length(timeline0))/3600; 
+
+% figure(1)
+% hold on
+% plot(MAE(1,:))
+% plot(RMSE(1,:))
+% 
+% legend('MAE','RMSE')
+
+% figure(3)
+% title('Correlation betwen MAPE and density along z axis')
+% hold on
+% yyaxis("left")
+% ylabel("MAPE")
+% plot(timeline/3600,MAPE(1,:))
+
+
+% Seasonal analysis 
+% It is evident from figures 2 and 3 that the error function is time
+% dependent. However, it is not clear that this is the only factor at play.
+% Namely, because the shape of the swarm changes as a funciton of time
+% also, it may be that the error function is swarm-density dependent
+% instead, or more strongly so. The following analyisis is carried out to
+% verify if a correlation exists between swarm density and the Mean Average
+% Percentage Error
+
+% 1. Get the swarm density as a function of time  
+% get ADJ in cylindrical coordinates (in-line density is the most
+% representatve of swarm structure)
+ADJcyl = cell(1,length(timeline));
+for t=1:length(timeline)
+    ADJcyl{t} = getADJ(dataCyl,t);
+end
+% Establish swarm boundaries at each instant. 
+swarmScale = zeros(3,length(timeline)); 
+for t=1:length(timeline)
+    swarmScale(1,t) = max(max(ADJcyl{t}{1}));%Theta
+    swarmScale(2,t) = max(max(ADJcyl{t}{2}));%Rho
+    swarmScale(3,t) = max(max(ADJcyl{t}{3}));%z
+end
+% Get the average density as a function of time (n/envelope)
+n = height(Data{1});
+swarmDensity = n./swarmScale; 
+%% Plot swarm density with MAPE
+figure(3)
+hold on
+title('Correlation betwen MAPE and density along z axis')
+hold on
+yyaxis("left")
+ylabel("MAPE")
+plot(timeline,MAPE(1,:))
+yyaxis("right")
+plot(timeline,swarmDensity(3,:))
+%legend('MAPE','density')
+xlabel("time [h]")
+ylabel("density [n/m]")
+%xlim([0,timeline(length(timeline))])
+%% draw period lines
+period = 6328/3600;
+for Tau=1:5 
+    xline(Tau*period)
+    xline(Tau*0.5*period)
+end
+% Get the MAPE correlation for each of the other two axis 
+figure(4)
+hold on
+title("Correlation of MAPE to density along \Delta \Theta")
+yyaxis("left")
+ylabel("MAPE")
+plot(timeline,MAPE(1,:))
+yyaxis("right")
+ylabel("density n/rad")
+plot(timeline,swarmDensity(1,:));
+legend('MAPE','density')
+xlabel("time [h]")
+xlim([0,timeline(length(timeline))])
+
+figure(5)
+hold on
+title("Correlation of MAPE to density along \Delta \rho")
+yyaxis("left")
+ylabel("MAPE")
+plot(timeline,MAPE(1,:))
+yyaxis("right")
+ylabel("density [n/m]")
+plot(timeline,swarmDensity(2,:));
+legend('MAPE','density')
+xlabel("time [h]")
+xlim([0,timeline(length(timeline))])
+
+clear n t ADJcyl adjCyl
 
 
 %% -------------------------FUNCTIONS-------------------------------- %% 
@@ -66,6 +160,7 @@ end
 % tranining set "TrSet" and the test set "TstSet". The function user also
 % provides the proportion of satellites "p" that must be assigned to the
 % testing set.
+
 
 function [TrSet, TstSet] = partitionArray(p,D,Ti)
 % Establish size of data set "n" 
@@ -167,3 +262,5 @@ function D_pol = cartesian2polar(D,Ti)
         D_pol(i,4:7) = D{Ti}(i,4:7);        
     end 
 end
+
+
