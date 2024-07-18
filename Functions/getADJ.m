@@ -29,7 +29,7 @@ if nargin == 2
     ADJ{2} = ADJ_rho; 
     ADJ{3} = ADJ_z; 
     
-    disp("your adjacency matrices are arranged in a cell structure such that {ADJ_theta,ADJ_rho,ADJ_z}")
+    %disp("your adjacency matrices are arranged in a cell structure such that {ADJ_theta,ADJ_rho,ADJ_z}")
 elseif nargin == 1
     %Create a buffer to be filled out for each ADJ
     ADJ_theta = zeros(height(myData)); 
@@ -56,5 +56,5 @@ elseif nargin == 1
     ADJ{2} = ADJ_rho; 
     ADJ{3} = ADJ_z; 
     
-    disp("your adjacency matrices are arranged in a cell structure such that {ADJ_theta,ADJ_rho,ADJ_z}")
+    %disp("your adjacency matrices are arranged in a cell structure such that {ADJ_theta,ADJ_rho,ADJ_z}")
 end

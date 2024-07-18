@@ -16,6 +16,4 @@ function genData(D_obj,C_obj)
     %1.Find the Earth's roation when each measurement was taken
     %2.Construct a rotation matrix
     %3.Rotate all timeline vectors 
-
-
 end
